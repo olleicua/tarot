@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative '../deck.rb'
+
+n = ARGV[0].to_i
+d = Deck.new
+p *d.draw(n)
