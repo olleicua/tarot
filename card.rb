@@ -5,13 +5,13 @@ class Card
   end
 
   def inspect
-    return @config[:major_arcana][@n - 56] if major?
-
-    "#{rank} of #{suit}"
+    major_arcana || "#{rank} of #{suit}"
   end
 
-  def major?
-    @n > 55
+  def major_arcana
+    return if @n < 56
+
+    @config[:major_arcana][@n - 56].tr('-', ' ')
   end
 
   def rank
@@ -25,4 +25,3 @@ class Card
     @config[:suits][@n / 14]
   end
 end
-

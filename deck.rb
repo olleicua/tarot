@@ -8,11 +8,11 @@ class Deck
     faces: %w[ Student Practitioner Singer Speaker ],
     major_arcana: %w[
       Child
-      Mage
-      Elevated Woman
-      Queen
-      King
-      Elevated Man
+      Magic
+      Intuition
+      Fertility
+      Authority
+      Tradition
       Intimacy
       Vehicle
       Power
