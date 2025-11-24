@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+require_relative '../deck.rb'
+
+78.times do |n|
+  card = Deck.new.conjure(n)
+  filesystem_name = card.inspect.downcase.tr(' ', '_')
+  card.paint(filename: "images/#{filesystem_name}.png")
+end

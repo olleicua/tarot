@@ -24,4 +24,10 @@ class Card
   def suit
     @config[:suits][@n / 14]
   end
+
+  def paint(filename:)
+    return @config.paint(rank: @n - 56, suit: :major, filename:) if major_arcana
+
+    @config.paint(rank: @n % 14, suit: @n / 14, filename:)
+  end
 end

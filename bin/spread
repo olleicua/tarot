@@ -3,5 +3,8 @@
 require_relative '../deck.rb'
 
 n = ARGV[0].to_i
+
+raise 'invalid spread size' if n == 0
+
 d = Deck.new
 p *d.draw(n)

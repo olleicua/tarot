@@ -1,4 +1,5 @@
 require_relative './card.rb'
+require_relative './config.rb'
 
 class Deck
   attr_accessor :table
@@ -31,7 +32,7 @@ class Deck
       Integration
     ]
   )
-    @config = { suits:, faces:, major_arcana: }
+    @config = Config.new(suits:, faces:, major_arcana:)
     collect
   end
 
@@ -42,6 +43,10 @@ class Deck
     }
 
     n == 1 ? @table.last : @table
+  end
+
+  def conjure(n)
+    Card.new(n, config: @config)
   end
 
   def shuffle
@@ -56,7 +61,7 @@ class Deck
   end
 
   def collect
-    @cards = (1..78).map { |n| Card.new(n, config: @config) }.shuffle
+    @cards = (1..78).map { |n| conjure(n) }.shuffle
     @table = []
   end
 end

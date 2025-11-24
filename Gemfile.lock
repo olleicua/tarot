@@ -1,0 +1,21 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    logger (1.7.0)
+    mini_magick (5.3.1)
+      logger
+    observer (0.1.2)
+    pkg-config (1.6.4)
+    rmagick (5.5.0)
+      observer (~> 0.1)
+      pkg-config (~> 1.4)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  mini_magick
+  rmagick (~> 5.4)
+
+BUNDLED WITH
+   2.3.7
