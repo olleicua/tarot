@@ -26,8 +26,20 @@ class Card
   end
 
   def paint(filename:)
-    return @config.paint(rank: @n - 56, suit: :major, filename:) if major_arcana
+    if major_arcana
+      return @config.paint(
+               rank: @n - 56,
+               suit: :major,
+               filename:,
+               text: inspect
+             )
+    end
 
-    @config.paint(rank: @n % 14, suit: @n / 14, filename:)
+    @config.paint(
+      rank: @n % 14,
+      suit: @n / 14,
+      filename:,
+      text: inspect
+    )
   end
 end

@@ -6,10 +6,16 @@ CANVAS_HEIGHT = 560
 CANVAS_WIDTH = 400
 CANVAS_MARGIN = 15
 
+GIFT_COLOR = 'rgb(39, 168, 0)'
+HUG_COLOR = '#bb3399'
+CUT_COLOR = '#5599ff'
+SPARK_COLOR = '#ff2200'
+
+FONT_SIZE = 35
+
 class MinimalistPainter
-  def self.paint(rank:, suit:, filename:)
+  def self.paint(rank:, suit:, filename:, text:)
     return if suit == :major
-    return unless rank == 0
 
     canvas = Magick::Image.new(
       CANVAS_WIDTH + (2 * CANVAS_MARGIN),
@@ -17,20 +23,35 @@ class MinimalistPainter
     )
     context = Magick::Draw.new
 
-    # background color
     context.fill('#000000')
     context.rectangle(0, 0, canvas.columns, canvas.rows)
 
-    send(
-      %i[ gift hug cut spark ][suit],
-      context:,
-      x: CANVAS_MARGIN,
-      y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
-      size: CANVAS_WIDTH
-    )
+    written = send(%i[ gifts hugs cuts sparks ][suit], rank + 1, context:)
+    return unless written
 
     context.draw(canvas)
+
+    add_text(
+      canvas:,
+      text:,
+      color: [GIFT_COLOR, HUG_COLOR, CUT_COLOR, SPARK_COLOR][suit]
+    )
+
     canvas.write(filename)
+  end
+
+  def self.add_text(canvas:, text:, color:)
+    text_context = Magick::Draw.new
+
+    text_context.font_family = 'Arial'
+    text_context.pointsize = FONT_SIZE
+    text_context.gravity = Magick::CenterGravity
+
+    text_context.annotate(
+      canvas, 0, 0,
+      0, CANVAS_HEIGHT / 2 - FONT_SIZE,
+      text
+    ) { |options| options.fill = color }
   end
 
   def self.rand_in_box(x1, x2, y1, y2)
@@ -42,6 +63,17 @@ class MinimalistPainter
   def self.string_from_box(*args)
     x, y = rand_in_box(*args)
     "#{x},#{y}"
+  end
+
+  def self.gifts(n, context:)
+    return unless n == 1
+
+    gift(
+      context:,
+      x: CANVAS_MARGIN,
+      y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
+      size: CANVAS_WIDTH
+    )
   end
 
   def self.gift(context:, x:, y:, size:)
@@ -99,8 +131,19 @@ class MinimalistPainter
     )
   end
 
+  def self.hugs(n, context:)
+    return unless n == 1
+
+    hug(
+      context:,
+      x: CANVAS_MARGIN,
+      y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
+      size: CANVAS_WIDTH
+    )
+  end
+
   def self.hug(context:, x:, y:, size:)
-    context.stroke('#bb3399')
+    context.stroke(HUG_COLOR)
     context.stroke_width(8)
     context.fill_opacity(0)
     context.stroke_linecap('round')
@@ -124,15 +167,28 @@ class MinimalistPainter
     ]
   end
 
-  def self.cut(context:, x:, y:, size:)
+  def self.cuts(n, context:)
+    return if n > 10
+
+    x = CANVAS_MARGIN
+    y = ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN
+    size = CANVAS_WIDTH
     center_x = x + size / 2
     center_y = y + size / 2
-    cut_start_angle = rand * TAU
-    cut_angle_a = cut_start_angle + 4 * TAU / 11 + rand * 3 * TAU / 11
-    cut_angle_b = cut_start_angle + 4 * TAU / 11 + rand * 3 * TAU / 11
 
-    context.fill('#5599ff')
+    context.fill(CUT_COLOR)
     context.circle(center_x, center_y, x + size / 2, y + size / 7)
+
+    (0..9).to_a.shuffle[0 .. n - 1].each do |start_position|
+      cut(context:, size:, center_x:, center_y:, start_position:)
+    end
+  end
+
+  def self.cut(context:, size:, center_x:, center_y:, start_position:)
+    cut_start_angle = start_position * TAU / 10
+    wiggle = rand * 2 * TAU / 11
+    cut_angle_a = cut_start_angle + 3.75 * TAU / 11 + rand * 1.5 * TAU / 11 + wiggle
+    cut_angle_b = cut_start_angle + 3.75 * TAU / 11 + rand * 1.5 * TAU / 11 + wiggle
 
     context.fill('#000000')
     context.polygon(
@@ -142,9 +198,33 @@ class MinimalistPainter
     )
   end
 
+  def self.sparks(n, context:)
+    return if n > 10
+
+    if n == 1
+      return spark(
+               context:,
+               x: CANVAS_MARGIN,
+               y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
+               size: CANVAS_WIDTH
+             )
+    end
+
+    size = CANVAS_WIDTH / 2
+    n.times do
+      x, y = rand_in_box(
+        CANVAS_MARGIN,
+        CANVAS_MARGIN + CANVAS_WIDTH - size,
+        CANVAS_MARGIN,
+        CANVAS_HEIGHT - size - FONT_SIZE
+      )
+      spark(context:, x:, y:, size:)
+    end
+  end
+
   def self.spark(context:, x:, y:, size:)
-    context.stroke('#ff2200')
-    context.stroke_width(1)
+    context.stroke(SPARK_COLOR)
+    context.stroke_width(2)
     context.fill_opacity(0)
     context.stroke_linecap('butt')
 
