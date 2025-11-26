@@ -66,98 +66,193 @@ class MinimalistPainter
   end
 
   def self.gifts(n, context:)
-    return unless n == 1
+    return if n > 10
 
-    gift(
-      context:,
-      x: CANVAS_MARGIN,
-      y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
-      size: CANVAS_WIDTH
-    )
+    if n == 1
+      return gift(
+        context:,
+        base_x: CANVAS_MARGIN,
+        base_y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
+        size: CANVAS_WIDTH,
+        position: :ace
+      )
+    end
+
+    size = (CANVAS_HEIGHT + CANVAS_WIDTH) / 8
+    base_x = CANVAS_MARGIN + (CANVAS_WIDTH - 3 * size) / 2
+    base_y = CANVAS_MARGIN
+    (0..9).to_a.shuffle[0 .. n - 1].each do |position|
+      gift(context:, size:, base_x:, base_y:, position:)
+    end
   end
 
-  def self.gift(context:, x:, y:, size:)
+  def self.gift(context:, base_x:, base_y:, size:, position:)
     top, left, center, right, bottom = [
-      rand_in_box(63, 127, 128, 160),
-      rand_in_box(0, 31, 128, 192),
-      rand_in_box(47, 79, 175, 207),
-      rand_in_box(96, 127, 192, 255),
-      rand_in_box(0, 63, 224, 255)
+      rand_in_box(68, 127, 128, 155),
+      rand_in_box(0, 26, 128, 187),
+      rand_in_box(52, 74, 180, 202),
+      rand_in_box(101, 127, 197, 255),
+      rand_in_box(0, 58, 229, 255)
     ].shuffle
 
-    r, g = top
-    context.fill("rgb(#{r}, #{g}, 0)")
-    context.polygon(
-      x, y,
-      x + size, y,
-      x + 3 * size / 4, y + size / 4,
-      x + size / 4, y + size / 4
-    )
+    if position == :ace
+      x, y = base_x, base_y
+    else
+      x = base_x + size * (position % 3)
+      y = base_y + size * (position / 3)
+    end
 
-    r, g = left
-    context.fill("rgb(#{r}, #{g}, 0)")
-    context.polygon(
-      x, y,
-      x + size / 4, y + size / 4,
-      x + size / 4, y + 3 * size / 4,
-      x, y + size
-    )
+    tlo, tro, bro, blo, tli, tri, bri, bli = [
+      [x, y],
+      [x + size, y],
+      [x + size, y + size],
+      [x, y + size],
+      [x + size / 4, y + size / 4],
+      [x + 3 * size / 4, y + size / 4],
+      [x + 3 * size / 4, y + 3 * size / 4],
+      [x + size / 4, y + 3 * size / 4]
+    ]
 
-    r, g = center
-    context.fill("rgb(#{r}, #{g}, 0)")
-    context.polygon(
-      x + size / 4, y + size / 4,
-      x + 3 * size / 4, y + size / 4,
-      x + 3 * size / 4, y + 3 * size / 4,
-      x + size / 4, y + 3 * size / 4
-    )
+    unless position == :ace
+      if position / 3 == 0
+        top = false
+        tlo[1] = y + size / 2
+        tro[1] = y + size / 2
+      end
 
-    r, g = right
-    context.fill("rgb(#{r}, #{g}, 0)")
-    context.polygon(
-      x + size, y,
-      x + size, y + size,
-      x + 3 * size / 4, y + 3 * size / 4,
-      x + 3 * size / 4, y + size / 4
-    )
+      if position % 3 == 0
+        left = false
+        tlo[0] = x + size / 2
+        blo[0] = x + size / 2
+      end
 
-    r, g = bottom
-    context.fill("rgb(#{r}, #{g}, 0)")
-    context.polygon(
-      x, y + size,
-      x + size  / 4, y + 3 * size / 4,
-      x + 3 * size / 4, y + 3 * size / 4,
-      x + size, y + size
-    )
+      if position % 3 == 2
+        right = false
+        tro[0] = x + size / 2
+        bro[0] = x + size / 2
+      end
+
+      if position / 3 == 3
+        bottom = false
+        blo[1] = y + size / 2
+        bro[1] = y + size / 2
+      end
+    end
+
+    if top
+      b, g = top
+      context.fill("rgb(110, #{g * 1.2}, #{b * 1.2})")
+      context.polygon(*tlo, *tro, *tri, *tli)
+    end
+
+    if left
+      b, g = left
+      context.fill("rgb(80, #{g * 1.1}, #{b * 1.1})")
+      context.polygon(*tlo, *tli, *bli, *blo)
+    end
+
+    if right
+      b, g = right
+      context.fill("rgb(0, #{g * 0.75}, #{b * 0.75})")
+      context.polygon(*tro, *bro, *bri, *tri)
+    end
+
+    if bottom
+      b, g = bottom
+      context.fill("rgb(0, #{g * 0.5}, #{b * 0.5})")
+      context.polygon(*blo, *bli, *bri, *bro)
+    end
+
+    b, g = center
+    context.fill("rgb(50, #{g}, #{b})")
+    context.polygon(*tli, *tri, *bri, *bli)
+  end
+
+  def self.rotate_point(
+        angle, x, y,
+        cx = CANVAS_MARGIN + CANVAS_WIDTH / 2,
+        cy = CANVAS_MARGIN + CANVAS_HEIGHT / 2
+      )
+    [
+      (x - cx) * Math.cos(angle) - (y - cy) * Math.sin(angle) + cx,
+      (x - cx) * Math.sin(angle) + (y - cy) * Math.cos(angle) + cy
+    ]
   end
 
   def self.hugs(n, context:)
-    return unless n == 1
+    return if n > 10
 
-    hug(
-      context:,
-      x: CANVAS_MARGIN,
-      y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
-      size: CANVAS_WIDTH
-    )
+    if n == 1
+      return hug(
+               context:,
+               **hug_params(
+                 x: CANVAS_MARGIN,
+                 y: ((CANVAS_HEIGHT - CANVAS_WIDTH) / 2) + CANVAS_MARGIN,
+                 size: CANVAS_WIDTH,
+                 rotate: 0
+               )
+             )
+    end
+
+    sweep_size = TAU / n
+    n.times do |i|
+      hug(
+        context:,
+        **hug_params(
+          x: CANVAS_MARGIN + CANVAS_WIDTH / 4,
+          y: CANVAS_MARGIN + CANVAS_HEIGHT / 2,
+          size: CANVAS_WIDTH / 2,
+          rotate: sweep_size * i + sweep_size * rand
+        )
+      )
+    end
   end
 
-  def self.hug(context:, x:, y:, size:)
+  def self.hug_params(x:, y:, size:, rotate:)
+    wiggle = size / 3
+    {
+      left_hand: rand_in_box(x + size / 4, x + size / 3, y, y + wiggle),
+      left_elbow: rand_in_box(x, x + wiggle, y + size / 3, y + size / 2),
+      left_shoulder: rand_in_box(x, x + wiggle, y + size, y + size),
+      spine: [x + size / 2, y + size],
+      right_shoulder:
+        rand_in_box(x + size - wiggle, x + size, y + size, y + size),
+      right_elbow:
+        rand_in_box(x + size - wiggle, x + size, y + size / 3, y + size / 2),
+      right_hand:
+        rand_in_box(x + 2 * size / 3, x + 3 * size / 4, y, y + wiggle)
+    }.map do |key, value|
+      [
+        key,
+        rotate_point(rotate, *value).join(',')
+      ]
+    end.to_h
+  end
+
+  def self.hug(
+        context:,
+        left_hand:,
+        left_elbow:,
+        left_shoulder:,
+        spine:,
+        right_shoulder:,
+        right_elbow:,
+        right_hand:
+      )
+    path =
+      "M#{left_hand}
+       C#{left_elbow}
+       #{left_shoulder}
+       #{spine}
+       C#{right_shoulder}
+       #{right_elbow}
+       #{right_hand}"
+
     context.stroke(HUG_COLOR)
-    context.stroke_width(8)
+    context.stroke_width(12)
     context.fill_opacity(0)
     context.stroke_linecap('round')
-
-    wiggle = size / 3
-    context.path(
-      "M#{string_from_box(x + size / 4, x + size / 3, y, y + wiggle)}
-      C#{string_from_box(x, x + wiggle, y + size / 3, y + size / 2)}
-      #{string_from_box(x, x + wiggle, y + size, y + size)}
-      #{x + size / 2},#{y + size}
-      C#{string_from_box(x + size - wiggle, x + size, y + size, y + size)}
-      #{string_from_box(x + size - wiggle, x + size, y + size / 3, y + size / 2)}
-      #{string_from_box(x + 2 * size / 3, x + 3 * size / 4, y, y + wiggle)}"
-    )
+    context.path(path)
   end
 
   def self.from_polar(center_x, center_y, theta, r)
