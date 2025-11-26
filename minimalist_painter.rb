@@ -81,7 +81,7 @@ class MinimalistPainter
     size = (CANVAS_HEIGHT + CANVAS_WIDTH) / 8
     base_x = CANVAS_MARGIN + (CANVAS_WIDTH - 3 * size) / 2
     base_y = CANVAS_MARGIN
-    (0..9).to_a.shuffle[0 .. n - 1].each do |position|
+    (0..11).to_a.shuffle[0 .. n - 1].each do |position|
       gift(context:, size:, base_x:, base_y:, position:)
     end
   end
