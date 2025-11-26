@@ -6,6 +6,7 @@ GEM
       logger
     observer (0.1.2)
     pkg-config (1.6.4)
+    require_all (3.0.0)
     rmagick (5.5.0)
       observer (~> 0.1)
       pkg-config (~> 1.4)
@@ -15,6 +16,7 @@ PLATFORMS
 
 DEPENDENCIES
   mini_magick
+  require_all
   rmagick (~> 5.4)
 
 BUNDLED WITH

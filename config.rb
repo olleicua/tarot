@@ -1,4 +1,4 @@
-require_relative './minimalist_painter.rb'
+require_relative './painter.rb'
 
 class Config < Hash
   def initialize(suits:, faces:, major_arcana:, paint_algorithm: :default)
