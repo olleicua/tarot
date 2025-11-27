@@ -11,7 +11,9 @@ class Card
   def major_arcana
     return if @n < 56
 
-    @config[:major_arcana][@n - 56].tr('-', ' ')
+    number = @n - 56
+    name = @config[:major_arcana][number]
+    "#{number}. #{name}".tr('-', ' ')
   end
 
   def rank

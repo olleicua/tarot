@@ -1,18 +1,18 @@
 require_relative './painter.rb'
 
 class Config < Hash
-  def initialize(suits:, faces:, major_arcana:, paint_algorithm: :default)
+  def initialize(suits:, faces:, major_arcana:, algorithm: :default)
     self[:suits] = suits
     self[:faces] = faces
     self[:major_arcana] = major_arcana
-    self[:paint_algorithm] = paint_algorithm
+    self[:algorithm] = algorithm
   end
 
   def paint(**args)
-    unless self[:paint_algorithm] == :default
+    unless self[:algorithm] == :default
       raise 'paint algorithm not implemented'
     end
 
-    MinimalistPainter.paint(**args)
+    Painter.paint(**args)
   end
 end

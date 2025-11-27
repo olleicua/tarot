@@ -18,7 +18,7 @@ STUDENT_COLOR = '#ddddff'
 
 FONT_SIZE = 35
 
-class MinimalistPainter
+class Painter
   extend PainterUtilities
 
   extend TextPainter
@@ -27,6 +27,13 @@ class MinimalistPainter
   extend CutPainter
   extend SparkPainter
   extend StudentPainter
+
+  def self.generate(n)
+    card = Deck.new.conjure(n)
+    filesystem_name = card.inspect.downcase.tr(' ', '_')
+    filename = "images/#{filesystem_name}.png"
+    puts "painted #{filename}" if card.paint(filename:)
+  end
 
   def self.paint(rank:, suit:, filename:, text:)
     return if suit == :major

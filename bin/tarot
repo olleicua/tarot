@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require_relative '../deck.rb'
+
+a, b = $*
+
+case a
+when nil
+  p Deck.new.draw
+when /^\d+$/
+  p *Deck.new.draw(a.to_i)
+when 'generate'
+  if b
+    Painter.generate(b.to_i)
+  else
+    78.times{ |n| Painter.generate(n) }
+  end
+when 'all'
+  d = Deck.new
+  d.collect
+  puts d.instance_eval('@cards').map do |c|
+    "#{c.instance_eval('@n')}: #{c.inspect}"
+  end
+else
+  puts 'usage:'
+  puts '  tarot            :  draw a single card'
+  puts '  tarot n          :  draw n cards'
+  puts '  tarot generate   :  generate images for all cards'
+  puts '  tarot generate n :  generate images for card with internal id n'
+  puts '  tarot all        :  show all cards in order with their internal ids'
+end

@@ -1,5 +1,9 @@
 module CutPainter
   def cuts(n, context:)
+    if n == 11
+      student(context:, book_color: SPARK_COLOR)
+    end
+
     return if n > 10
 
     x = CANVAS_MARGIN

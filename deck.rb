@@ -34,6 +34,7 @@ class Deck
   )
     @config = Config.new(suits:, faces:, major_arcana:)
     collect
+    shuffle
   end
 
   def draw(n = 1)
@@ -61,7 +62,7 @@ class Deck
   end
 
   def collect
-    @cards = (1..78).map { |n| conjure(n) }.shuffle
+    @cards = (0..77).map { |n| conjure(n) }
     @table = []
   end
 end

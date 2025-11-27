@@ -1,16 +1,15 @@
 module StudentPainter
-  def student(context:)
+  def student(context:, book_color:)
     left_eye(context:)
     right_eye(context:)
-    mouth(context:)
-
-    true
+    #mouth(context:)
+    book(context:, book_color:)
   end
 
   def left_eye(context:)
-    width = CANVAS_WIDTH / 10
+    width = CANVAS_WIDTH / 9
     x_offset = CANVAS_MARGIN + 3 * width
-    y_offset = CANVAS_MARGIN + width
+    y_offset = CANVAS_MARGIN + 1.5 * width
 
     lash_tip,
     lash_curl,
@@ -76,9 +75,9 @@ module StudentPainter
   end
 
   def right_eye(context:)
-    width = CANVAS_WIDTH / 10
+    width = CANVAS_WIDTH / 9
     x_offset = CANVAS_MARGIN + 5.5 * width
-    y_offset = CANVAS_MARGIN + 0.65 * width
+    y_offset = CANVAS_MARGIN + 1.15 * width
 
     left,
     left_curve_up,
@@ -123,7 +122,7 @@ module StudentPainter
   def mouth(context:)
     width = CANVAS_WIDTH / 12
     x_offset = CANVAS_MARGIN + 4.5 * CANVAS_WIDTH / 10
-    y_offset = CANVAS_MARGIN + 3 * CANVAS_WIDTH / 10
+    y_offset = CANVAS_MARGIN + 3.5 * CANVAS_WIDTH / 10
 
     left,
     left_curve_up,
@@ -149,5 +148,70 @@ module StudentPainter
     context.stroke_width(2)
     context.stroke_linecap('round')
     context.path(path)
+  end
+
+  def book(context:, book_color:)
+    width = CANVAS_WIDTH
+    x_offset = CANVAS_MARGIN
+    y_offset = CANVAS_MARGIN + (CANVAS_WIDTH + CANVAS_HEIGHT) / 2 - 10
+
+    context.stroke(book_color)
+    context.fill('none')
+    context.stroke_width(22)
+    context.stroke_linecap('round')
+    context.line(
+      x_offset + width / 8, y_offset - 10,
+      x_offset + 7 * width / 8, y_offset - 10
+    )
+
+    n = 16
+
+    [
+      [
+        1,
+        [
+          [width / 2 + 1 - n, -18],
+          [23 * width / 56 + 1 - n, -5 * width / 56 - 18],
+          [width / 4, -3 * width / 56],
+          [width / 8, -22]
+        ]
+      ],
+      [
+        -1,
+        [
+          [width / 2 + n - 1, -18],
+          [33 * width / 56 + n - 1, -5 * width / 56 - 18],
+          [3 * width / 4, -3 * width / 56],
+          [7 * width / 8, -22]
+        ]
+      ]
+    ].each do |dx, start_positions|
+      center,
+      center_curve_up,
+      edge_curve_up,
+      edge = start_positions.map{ |x, y| [x_offset + x, y_offset + y] }
+
+      n.times do
+        path =
+          "M#{center.join(',')}
+          C#{center_curve_up.join(',')}
+          #{edge_curve_up.join(',')}
+          #{edge.join(',')}"
+
+        context.stroke(STUDENT_COLOR)
+        context.fill('none')
+        context.stroke_width(2)
+        context.stroke_linecap('square')
+        context.path(path)
+
+        center[0] += dx
+        center_curve_up[0] += dx * [1, 2].sample
+        center_curve_up[1] -= [1, 2, 3, 7].sample
+        edge_curve_up[0] += dx
+        edge_curve_up[1] -= 1
+        edge[0] += dx * rand(2)
+        edge[1] -= 1
+      end
+    end
   end
 end
