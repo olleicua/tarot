@@ -1,4 +1,11 @@
 class Card
+  def self.generate_image(n)
+    card = Deck.new.conjure(n)
+    filesystem_name = card.inspect.downcase.tr(' ', '_')
+    filename = "images/#{filesystem_name}.png"
+    puts "painted #{filename}" if card.paint(filename:)
+  end
+
   def initialize(n, config:)
     @n = n
     @config = config

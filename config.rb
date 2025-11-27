@@ -1,15 +1,43 @@
 require_relative './painter.rb'
 
 class Config < Hash
-  def initialize(suits:, faces:, major_arcana:, algorithm: :default)
+  def initialize(
+        suits: %w[ Gifts Hugs Cuts Sparks ],
+        faces: %w[ Student Practitioner Singer Speaker ],
+        major_arcana: %w[
+          Child
+          Magic
+          Intuition
+          Fertility
+          Authority
+          Tradition
+          Intimacy
+          Vehicle
+          Power
+          Isolation
+          Probability
+          Integrity
+          Reverse
+          Closure
+          Balance
+          Nuance
+          Chaos
+          Destiny
+          Night
+          Day
+          Discernment
+          Integration
+        ],
+        paint_algorithm: :default
+      )
     self[:suits] = suits
     self[:faces] = faces
     self[:major_arcana] = major_arcana
-    self[:algorithm] = algorithm
+    self[:paint_algorithm] = paint_algorithm
   end
 
   def paint(**args)
-    unless self[:algorithm] == :default
+    unless self[:paint_algorithm] == :default
       raise 'paint algorithm not implemented'
     end
 

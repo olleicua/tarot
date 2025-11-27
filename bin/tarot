@@ -11,9 +11,9 @@ when /^\d+$/
   p *Deck.new.draw(a.to_i)
 when 'generate'
   if b
-    Painter.generate(b.to_i)
+    Card.generate_image(b.to_i)
   else
-    78.times{ |n| Painter.generate(n) }
+    78.times{ |n| Card.generate_image(n) }
   end
 when 'all'
   d = Deck.new

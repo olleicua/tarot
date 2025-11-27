@@ -4,35 +4,8 @@ require_relative './config.rb'
 class Deck
   attr_accessor :table
 
-  def initialize(
-    suits: %w[ Gifts Hugs Cuts Sparks ],
-    faces: %w[ Student Practitioner Singer Speaker ],
-    major_arcana: %w[
-      Child
-      Magic
-      Intuition
-      Fertility
-      Authority
-      Tradition
-      Intimacy
-      Vehicle
-      Power
-      Isolation
-      Probability
-      Integrity
-      Reverse
-      Closure
-      Balance
-      Nuance
-      Chaos
-      Destiny
-      Night
-      Day
-      Discernment
-      Integration
-    ]
-  )
-    @config = Config.new(suits:, faces:, major_arcana:)
+  def initialize(**kwargs)
+    @config = Config.new(**kwargs)
     collect
     shuffle
   end
