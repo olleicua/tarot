@@ -1,5 +1,9 @@
 require_relative './painter.rb'
 
+# A Config is a special type of ruby Hash that has
+# four default values which can be overridden.
+# For example Config.new(suits: %[ Marbles Pots Nails Boards ])
+# would use all of the default values except with new names for the suits.
 class Config < Hash
   def initialize(
         suits: %w[ Gifts Hugs Cuts Sparks ],
