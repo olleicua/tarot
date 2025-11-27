@@ -10,4 +10,4 @@ bin/tarot commands
 
 ## Project Status
 
-Currently the CLI is in a decent state and i am working on procedurally generating images for a default deck. The code is designed to handle custom decks as well as custom image generation algorithms (see config.rb for more context on how the customizations should work.
+Currently the CLI is in a decent state and i am working on procedurally generating images for a default deck. The code is designed to handle custom decks as well as custom image generation algorithms. Customization is implemented in config.rb.
