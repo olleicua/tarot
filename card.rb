@@ -5,6 +5,10 @@ class Card
   end
 
   def inspect
+    to_s
+  end
+
+  def to_s
     major_arcana || "#{rank} of #{suit}"
   end
 

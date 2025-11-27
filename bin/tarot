@@ -18,8 +18,8 @@ when 'generate'
 when 'all'
   d = Deck.new
   d.collect
-  puts d.instance_eval('@cards').map do |c|
-    "#{c.instance_eval('@n')}: #{c.inspect}"
+  d.instance_eval('@cards').each do |c|
+    puts "#{c.instance_eval('@n')}: #{c}"
   end
 else
   puts 'usage:'
